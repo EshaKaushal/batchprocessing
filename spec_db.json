@@ -1,0 +1,33 @@
+{
+  "pipeline": {
+    "name": "push-answers"
+  },
+  "description": "A pipeline that pushes answers to the database",
+  "transform": {
+    "cmd": [ "python", "sql.py" ],
+    "image": "dwhitena/mgmt590-sql",
+    "secrets": [ 
+      {
+        "name": "dbaccess",
+        "env_var": "PG_HOST",
+        "key": "host"
+      },
+      {
+        "name": "dbaccess",
+	"env_var": "PG_PASSWORD",
+	"key": "password"
+      },
+      {
+        "name": "dbacces",
+	"env_var": "PG_SSLCERT",
+	"key": "sslcert"
+      } 
+    ]
+  },
+  "input": {
+    "pfs": {
+      "repo": "getfiles",
+      "glob": "/"
+    }
+  }
+}

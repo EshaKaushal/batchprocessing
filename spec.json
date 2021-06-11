@@ -1,0 +1,27 @@
+{
+  "pipeline": {
+    "name": "getfiles"
+  },
+  "description": "A pipeline that gets a file out of GCS",
+  "transform": {
+    "cmd": [ "/bin/bash" ],
+    "stdin": [
+      "echo $GCS_ACCESS > /app/rawcreds.txt",
+      "base64 --decode /app/rawcreds.txt > /app/creds.json",
+      "export GOOGLE_APPLICATION_CREDENTIALS=/app/creds.json",
+      "python /app/gcs.py"
+    ],
+    "image": "dwhitena/mgmt590-gcs:5762b7372b2feb7cff9b2cec475d85e8c0c37a53",
+    "secrets": [ {
+        "name": "gcsaccess",
+        "env_var": "GCS_ACCESS",
+        "key": "creds"
+    } ]
+  },
+  "input": {
+    "cron": {
+      "name": "tick",
+      "spec": "@every 10s"
+    }
+  }
+}

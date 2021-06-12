@@ -1,6 +1,6 @@
 {
   "pipeline": {
-    "name": "getfiles"
+    "name": "writeAnswer"
   },
   "description": "A pipeline that gets a file out of GCS",
   "transform": {
@@ -9,9 +9,9 @@
       "echo $GCS_ACCESS > /app/rawcreds.txt",
       "base64 --decode /app/rawcreds.txt > /app/creds.json",
       "export GOOGLE_APPLICATION_CREDENTIALS=/app/creds.json",
-      "python /app/gcs.py"
+      "python /app/pipeline2.py"
     ],
-    "image": "esha212/mgmt590-gcs",
+    "image": "esha212/mgmt590-sql:00c5e75cd01b1129a65236b0016cb4d68347bd18",
     "secrets": [ {
         "name": "gcsaccess",
         "env_var": "GCS_ACCESS",

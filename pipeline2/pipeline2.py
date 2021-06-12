@@ -8,6 +8,7 @@ import os
 import stat
 import psycopg2
 import sqlite3 as sql
+import base64
 
 
 delimiter='/'
@@ -21,19 +22,36 @@ def getDBString_PROD():
     # Format DB connection information
     sslmode = "sslmode=verify-ca"
 
-    rootname = os.path.dirname
+    if not os.path.exists('.ssl'):
+        os.makedirs('.ssl')
 
-    # Format DB connection information
-    # Format DB connection information
-    sslrootcert = "sslrootcert={}".format(os.environ.get('PG_SSLROOTCERT'))
-    sslcert = "sslcert={}".format(os.environ.get('PG_SSLCERT'))
-    sslkey = "sslkey={}".format(os.environ.get('PG_SSLKEY'))
+    filecontents = os.environ.get('PG_SSLROOTCERT')
+    decoded_sslrootcert = base64.b64decode(filecontents)
+    with open('.ssl/server-ca.pem', 'wb') as f:
+        f.write(decoded_sslrootcert)
 
-    #ensure all variables are defined in cloud shell
+    filecontents = os.environ.get('PG_SSLCLIENT_CERT')
+    decoded_sslclientcert = base64.b64decode(filecontents)
+    with open('.ssl/client-cert.pem', 'wb') as f:
+        f.write(decoded_sslclientcert)
+
+    filecontents = os.environ.get('PG_SSL_CLIENT_KEY')
+    decoded_sslclientkey = base64.b64decode(filecontents)
+    with open('.ssl/client-key.pem', 'wb') as f:
+        f.write(decoded_sslclientkey)
+
+    os.chmod(".ssl/server-ca.pem", 0o600)
+    os.chmod(".ssl/client-cert.pem", 0o600)
+    os.chmod(".ssl/client-key.pem", 0o600)
+
     hostaddr = "hostaddr={}".format(os.environ.get('PG_HOST'))
     user = "user=postgres"
-    password = "password={}".format(os.environ.get('PG_PASSWORD'))
     dbname = "dbname=mgmt590"
+    password = "password={}".format(os.environ.get('PG_PASSWORD'))
+
+    sslrootcert = "sslrootcert=.ssl/server-ca.pem"
+    sslcert = "sslcert=.ssl/client-cert.pem"
+    sslkey = "sslkey=.ssl/client-key.pem"
 
     # Construct database connect string
     db_connect_string = " ".join([
@@ -55,12 +73,15 @@ def init_db(environment):
     if environment == 'PROD':
         db_connect_string = getDBString_PROD()
         con = psycopg2.connect(db_connect_string)
+    elif environment=='TEST':
+        con = sql.connect("questionAnswerTest.db")
     elif environment=='LOCAL':
         con = sql.connect("questionAnswer.db")
     cur = con.cursor()
     cur.execute('''CREATE TABLE IF NOT EXISTS answers
                    (question text, context text, model text, answer text, timestamp int)''')
     return con
+
 
 def saveData(data,environment):
     print('inside saveData')
@@ -93,24 +114,30 @@ def main():
 
     environment = 'PROD'
 
-    print('Inside dataProcessor --> environment',environment)
+    print('Inside dataProcessor --> environment',environment )
 
     try:
         # fetch filed from the output directory
-        folderName = os.getcwd()+'\pfs\out'
+        folderName = '/pfs/out/'
 
         if not os.path.exists(folderName):
             print('Output folder from first pipeline not found')
         else:
             print('Output folder found')
-            for file_name in os.listdir(folderName):
-                with open(folderName + delimiter+ file_name):
-                    data = csv.DictReader(file_name)
+
+            for file_name in [file for file in os.listdir(folderName) if file.endswith('.json')]:
+                print('Found the json file')
+                with open(folderName+ file_name) as json_file:
+                    print('Loading the data')
+                    data = json.load(json_file)
+                    print('Loaded the data')
+
                 # Save to database
                 saveData(data,environment)
 
     except Exception as ex:
         print('Exception Occurred in pipeline 02 --> ' , ex)
+
 
 if __name__ == "__main__":
     logging.info('Inside main() --> Pipeline 02')

@@ -2,4 +2,4 @@ FROM python
 
 RUN pip install google-cloud-storage
 
-COPY gcs.py /app/gcs.py
+COPY pipeline2.py /app/pipeline2.py

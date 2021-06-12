@@ -1,6 +1,6 @@
-#Building a containerized batch pipeline for AI inference with triggers from a REST API
+## Building a containerized batch pipeline for AI inference with triggers from a REST API
 
-## Introduction
+### Introduction
 
 Welcome to our question answering API interface. This interface allows a user to upload a csv file containing ‘questions’ and ‘context’ and populates the answer using AI model.
 The application uses 

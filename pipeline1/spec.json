@@ -9,9 +9,9 @@
       "echo $GCS_ACCESS > /app/rawcreds.txt",
       "base64 --decode /app/rawcreds.txt > /app/creds.json",
       "export GOOGLE_APPLICATION_CREDENTIALS=/app/creds.json",
-      "python /app/gcs.py"
+      "python /app/pipeline1.py"
     ],
-    "image": "esha212/mgmt590-gcs",
+    "image": "esha212/mgmt590-gcs:d5ea7b8a4a422c56a079b311a464b4b35538fd42",
     "secrets": [ {
         "name": "gcsaccess",
         "env_var": "GCS_ACCESS",

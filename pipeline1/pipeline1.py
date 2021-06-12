@@ -10,7 +10,7 @@ models = {}
 delimiter='/'
 
 
-def question_answer(qa_file,environment):
+def question_answer(qa_file,environment,models):
     print('Inside question_answer ')
     if environment == "local":
         output_folder = os.getcwd() + '\pfs\out'
@@ -21,8 +21,9 @@ def question_answer(qa_file,environment):
 
     final_answer = []
 
-    hg_comp = pipeline('question-answering', model="distilbert-base-uncased-distilled-squad",
-                       tokenizer="distilbert-base-uncased-distilled-squad")
+    hg_comp = models['pipeline']
+
+    #hg_comp = pipeline('question-answering', model="distilbert-base-uncased-distilled-squad", tokenizer="distilbert-base-uncased-distilled-squad")
     answer = []
     questions = []
     contexts = []
@@ -77,8 +78,24 @@ def downloadFiles(environment):
         for blob in blobs:
             blob.download_to_filename(output_folder+delimiter+blob.name)
     except Exception as ex:
-     print("Exception occurred while trying to download files ", ex)
+        print("Exception occurred while trying to download files ", ex)
 
+def delete_file(environment):
+    if environment == "local":
+        bucket_name = 'mgmt590-assgn4'
+        storage_client = storage.Client.from_service_account_json('credentials.json')
+        bucket = storage_client.get_bucket(bucket_name)
+        output_folder = os.getcwd() + '\pfs\in'
+    elif environment == "prod":
+        bucket_name = 'mgmt590-assgn4'
+        storage_client = storage.Client()
+        bucket = storage_client.get_bucket(bucket_name)
+    try:
+        blobs = bucket.list_blobs()
+        for blob in blobs:
+            blob.delete()
+    except Exception as ex:
+        print("Exception occurred while deleting the files ", ex)
 
 if __name__ == '__main__':
     environment = "prod"
@@ -89,14 +106,24 @@ if __name__ == '__main__':
 
     downloadFiles(environment)
 
-    # Load the defaoly model
+    # Load the default model
+    models = {"name": "distilled-bert",
+              "tokenizer": "distilbert-base-uncased-distilled-squad",
+              "model": "distilbert-base-uncased-distilled-squad",
+              "pipeline": pipeline('question-answering',
+                                   model="distilbert-base-uncased-distilled-squad",
+                                   tokenizer="distilbert-base-uncased-distilled-squad")
+              }
 
-    #output_folder = os.getcwd()+'\pfs\in'
-    # walk /pfs/question_answer and call question_answer on every file found
+    # walk /pfs/in and call question_answer on every file found
     for dirpath, dirs, files in os.walk(output_folder):
         for file in files:
             print("We are looping in the files")
             print("File Name: " + file)
             print(os.path.join(dirpath, file))
-            question_answer(os.path.join(dirpath, file),environment)
+            question_answer(os.path.join(dirpath, file),environment,models)
+
+    #delete file ingressed file from gcs bucket!
+    delete_file(environment)
+
 

@@ -1,7 +1,6 @@
 import csv
 import os
 import time
-import logging
 from google.cloud import storage
 from transformers.pipelines import pipeline
 
@@ -10,11 +9,16 @@ bucket = ''
 models = {}
 delimiter='/'
 
-# function to read file from input directory
-# answer the questions and write it to output directory
-def question_answer(qa_file):
-    # importing the file using pandas library
-    # data = pd.read_csv(qa_file)
+
+def question_answer(qa_file,environment):
+    print('Inside question_answer ')
+    if environment == "local":
+        output_folder = os.getcwd() + '\pfs\out'
+        delimiter = '/'
+    if environment == "prod":
+        output_folder = os.getcwd() + '/pfs/out'
+        delimiter = "/"
+
     final_answer = []
 
     hg_comp = pipeline('question-answering', model="distilbert-base-uncased-distilled-squad",
@@ -39,13 +43,8 @@ def question_answer(qa_file):
         final_answer.append(contexts)
         final_answer.append(answer)
         print(final_answer)
-    # for idx, row in data.iterrows():
-    #    context = row['context']
-    #    question = row['question']
-    #    questions.append(question)
-    #    answer.append(hg_comp({'question': question, 'context': context})['answer'])
     timestamp = str(int(time.time()))
-    output_folder = os.getcwd() + '\pfs\out'
+    #output_folder = os.getcwd() + '\pfs\out'
     if not os.path.exists(output_folder):
         os.makedirs(output_folder, mode=0o777)
     with open(output_folder + delimiter+'answer_' + timestamp + ".csv", 'w') as f:
@@ -53,20 +52,24 @@ def question_answer(qa_file):
         for row in zip(*final_answer):
             fileWriter.writerow(row)
 
-    # data["answer"] = answer
-    # data.to_csv("/pfs/out/"+"question_answer"+timestamp+".csv", index=False)
 
-
-def downloadFiles():
+def downloadFiles(environment):
 
     print('Inside Download Files')
+    bucket = ''
 
-    bucket_name = 'mgmt590-assgn4'
-    storage_client = storage.Client.from_service_account_json('../test/credentials.json')
-    bucket = storage_client.get_bucket(bucket_name)
+    if environment == "local":
+        bucket_name = 'mgmt590-assgn4'
+        storage_client = storage.Client.from_service_account_json('credentials.json')
+        bucket = storage_client.get_bucket(bucket_name)
+        output_folder = os.getcwd() + '\pfs\in'
+    elif environment == "prod":
+        bucket_name = 'mgmt590-assgn4'
+        storage_client = storage.Client()
+        bucket = storage_client.get_bucket(bucket_name)
+        output_folder = os.getcwd() + '/pfs/in'
 
     # Create this folder locally if not exists
-    output_folder = os.getcwd()+'\pfs\in'
     if not os.path.exists(output_folder):
         os.makedirs(output_folder, mode=0o777)
     try:
@@ -78,26 +81,22 @@ def downloadFiles():
 
 
 if __name__ == '__main__':
-
-    environment = "local"
-
+    environment = "prod"
     if environment == "local":
-        # bucket_name = 'mgmt590-storage'
-        # storage_client = storage.Client.from_service_account_json('credentials.json')
-        # bucket = storage_client.get_bucket(bucket_name)
-        downloadFiles()
-    elif environment == "prod":
-        bucket_name = 'mgmt590-assgn4'
-        storage_client = storage.Client()
-        bucket = storage_client.get_bucket(bucket_name)
-        print("Downloading Files")
-        downloadFiles()
-    output_folder = os.getcwd()+'\pfs\in'
+        output_folder = os.getcwd() + '\pfs\in'
+    if environment == "prod":
+        output_folder = os.getcwd() + '/pfs/in'
+
+    downloadFiles(environment)
+
+    # Load the defaoly model
+
+    #output_folder = os.getcwd()+'\pfs\in'
     # walk /pfs/question_answer and call question_answer on every file found
     for dirpath, dirs, files in os.walk(output_folder):
         for file in files:
             print("We are looping in the files")
             print("File Name: " + file)
             print(os.path.join(dirpath, file))
-            question_answer(os.path.join(dirpath, file))
+            question_answer(os.path.join(dirpath, file),environment)
 

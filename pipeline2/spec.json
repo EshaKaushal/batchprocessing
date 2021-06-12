@@ -1,27 +1,33 @@
 {
   "pipeline": {
-    "name": "writeAnswer"
+    "name": "push-answers"
   },
-  "description": "A pipeline that gets a file out of GCS",
+  "description": "A pipeline that pushes answers to the database",
   "transform": {
-    "cmd": [ "/bin/bash" ],
-    "stdin": [
-      "echo $GCS_ACCESS > /app/rawcreds.txt",
-      "base64 --decode /app/rawcreds.txt > /app/creds.json",
-      "export GOOGLE_APPLICATION_CREDENTIALS=/app/creds.json",
-      "python /app/pipeline2.py"
-    ],
-    "image": "esha212/mgmt590-sql:00c5e75cd01b1129a65236b0016cb4d68347bd18",
-    "secrets": [ {
-        "name": "gcsaccess",
-        "env_var": "GCS_ACCESS",
-        "key": "creds"
-    } ]
+    "cmd": [ "python", "pipeline2.py" ],
+    "image": "esha212/mgmt590-sql:a613ba0a8b41677a1b6bc2ea77bbf62f75a8def1",
+    "secrets": [
+      {
+        "name": "dbaccess",
+        "env_var": "PG_HOST",
+        "key": "host"
+      },
+      {
+        "name": "dbaccess",
+	"env_var": "PG_PASSWORD",
+	"key": "password"
+      },
+      {
+        "name": "dbacces",
+	"env_var": "PG_SSLCERT",
+	"key": "sslcert"
+      }
+    ]
   },
   "input": {
-    "cron": {
-      "name": "tick",
-      "spec": "@every 10s"
+    "pfs": {
+      "repo": "getfiles",
+      "glob": "/"
     }
   }
 }

@@ -11,7 +11,7 @@
       "export GOOGLE_APPLICATION_CREDENTIALS=/app/creds.json",
       "python /app/pipeline1.py"
     ],
-    "image": "esha212/mgmt590-gcs:d5ea7b8a4a422c56a079b311a464b4b35538fd42",
+    "image": "esha212/mgmt590-gcs:ca35ebf963c7db56ea79d13c974ff93f9749e0f2",
     "secrets": [ {
         "name": "gcsaccess",
         "env_var": "GCS_ACCESS",
@@ -21,7 +21,7 @@
   "input": {
     "cron": {
       "name": "tick",
-      "spec": "@every 300s"
+      "spec": "@every 50s"
     }
   }
 }

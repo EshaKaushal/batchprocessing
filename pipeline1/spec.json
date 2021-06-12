@@ -21,7 +21,7 @@
   "input": {
     "cron": {
       "name": "tick",
-      "spec": "@every 10s"
+      "spec": "@every 300s"
     }
   }
 }

@@ -186,6 +186,12 @@ pachctl create secret -f secret_db.json
 ```
     pachctl list repo
 ```
+**system response**
+```
+NAME     CREATED     SIZE (MASTER)
+pfs/in 6 hours ago 1000B
+pfs/out 6 hours ago 1000B
+```
 Refer to [this helpful tutorial](https://docs.pachyderm.com/latest/getting_started/beginner_tutorial/) to make your pipeline spec. <br>
 
 - 7. Create your pipeline 
@@ -198,6 +204,13 @@ pachctl create pipeline -f pipeline_02.json
 - 8. Track your jobs 
 ```
 pachctl list job
+```
+**system response**
+```
+NAME       VERSION    INPUT             CREATED          STATE / LAST JOB    DESCRIPTION
+getfiles   1          tick:@every 300s  10 minutes ago   running/running     A pipeline that gets a file out of GCS
+push-answers   1      getfiles:/pfs/in  5 minutes ago   running/running     A pipeline that pushes answers to the database
+```
 watch pachctl list job
 pachctl logs -j <job_id>
 ```

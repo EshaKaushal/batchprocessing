@@ -211,6 +211,10 @@ NAME       VERSION    INPUT             CREATED          STATE / LAST JOB    DES
 getfiles   1          tick:@every 300s  10 minutes ago   running/running     A pipeline that gets a file out of GCS
 push-answers   1      getfiles:/pfs/in  5 minutes ago   running/running     A pipeline that pushes answers to the database
 ```
+```
 watch pachctl list job
+```
+**system response**
+<img src="/image/joblist.PNG">
 pachctl logs -j <job_id>
 ```

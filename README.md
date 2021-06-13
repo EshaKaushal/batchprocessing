@@ -213,7 +213,7 @@ push-answers   1      getfiles:/pfs/in  5 minutes ago   running/running     A pi
 pachctl list file <repo>@<branch-or-commit>[:<path/in/pfs>] [flags]
 ```
 
-<img src="/image/listfile.PNG">
+<img src="/image/lisfile.PNG">
 
 ```
 watch pachctl list job

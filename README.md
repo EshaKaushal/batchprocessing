@@ -23,7 +23,18 @@ Now to ensure that all the above steps are performed, our application relies on 
 1) **Pachyderm Hub** - Pachyderm hub is a SaaS platform that gives one access to all of Pachyderm's functionalities without the burden of deploying and maintaining it locally or in a third-party cloud platform.
 
 We use pachyderm to create batch pipelines that regularly scan our cloud buckets to check and process. Our code has 2 batch pipelines -
-* Pipeline 1 - Periodically (once every 5 mins) pulls in new files from our GCS bucket, processes the files using distilled-bert QA model to produce answer. It then deletes the ingress file from the GCS bucket. The output file with answers is stored in pfs/out and fed into pachyderm's pipeline2
+* Pipeline 1 - Periodically (once every 5 mins) pulls in new files from our GCS bucket, processes the files using distilled-bert QA model to produce answer. It then deletes the ingress file from the GCS bucket. The output file with answers is stored in pfs/out and fed into pachyderm's pipeline2.
+
+To add the scheduling part, we have added a cron job in our json file pipeline1_spec.json -
+```
+"input": {
+    "cron": {
+      "name": "tick",
+      "spec": "@every 300s"
+    }
+  }
+}
+```
 
 * Pipeline 2 - Reads in the output repository of the first pipeline as its inputs and pushes each row of the processed data as records in our PostgreSQL database.
 
@@ -50,7 +61,7 @@ We are pushing 2 images as our application has 2 pipelines.
         docker push esha212/mgmt590-sql:${{  github.sha }}
 ```
 
-3) **Google Cloud Services** -
+3) **Google Cloud Services** - We are extensively using google cloud services like - Clour Run, SQL server, Cloud Shell, Cloud storage bucket to ensure that our application and batch pipelines interact with each other.
 
 
 ### Creating batch pipelines in Pachyderm

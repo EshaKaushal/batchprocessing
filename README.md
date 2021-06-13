@@ -44,6 +44,12 @@ To add the scheduling part, we have added a cron job in our json file pipeline1_
 
 <i>If a user wishes, they can manually go and create the 2 repositories in the docker hub. Just remember to capture the image tags of the code deployed and mention those in the pachyderm's **pipeline1_spec.json** and **pipeline2_spec.json**</i>
 
+User can use the following command to accomplish above things manually -
+```
+docker build -t user1/mgmt590-gcs
+docker login
+```
+
 For our application, we are using GitHub actions to create our images on docker hub. Here is a snippet of our .yml file. Note that **DOCKERHUB_USERNAME** and **DOCKERHUB_TOKEN** are the user's dockerhub account's username and password. We have defined them as git hub secrets for security.
 
 We are pushing 2 images as our application has 2 pipelines.

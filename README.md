@@ -31,7 +31,7 @@ We use pachyderm to create batch pipelines that regularly scan our cloud buckets
 
 2) **Docker Hub** - Docker Hub is a service provided by Docker for creating and sharing container images for the project. Docker images are pushed to Docker Hub through the ``` docker push``` command. A single Docker Hub repository can hold many Docker images.
 
-For our application, we are using GitHub actions to create our images on docker hub. Here is a snippet of our .yml file. Note that DOCKERHUB_USERNAME and DOCKERHUB_TOKEN are the user's dockerhub account's username and password. We have defined them as git hub secrets for security.
+For our application, we are using GitHub actions to create our images on docker hub. Here is a snippet of our .yml file. Note that **DOCKERHUB_USERNAME** and **DOCKERHUB_TOKEN** are the user's dockerhub account's username and password. We have defined them as git hub secrets for security.
 
 We are pushing 2 images as our application has 2 pipelines.
 

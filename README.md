@@ -182,6 +182,7 @@ Following is a template command to make your pipeline
 ```
 pachctl create pipeline -f pipeline_01.json
 pachctl create pipeline -f pipeline_02.json
+```
 
 - 8. Track your jobs 
 ```

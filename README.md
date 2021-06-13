@@ -25,7 +25,7 @@ Now to ensure that all the above steps are performed, our application relies on 
 We use pachyderm to create batch pipelines that regularly scan our cloud buckets to check and process. Our code has 2 batch pipelines -
 * Pipeline 1 - Periodically (once every 5 mins) pulls in new files from our GCS bucket, processes the files using distilled-bert QA model to produce answer. It then deletes the ingress file from the GCS bucket. The output file with answers is stored in pfs/out and fed into pachyderm's pipeline2
 
-* Pipelien 2 - Reads in the output repository of the first pipeline as its inputs and pushes each row of the processed data as records in our PostgreSQL database.
+* Pipeline 2 - Reads in the output repository of the first pipeline as its inputs and pushes each row of the processed data as records in our PostgreSQL database.
 
 <img src="/image/pachypipeline.PNG">
 

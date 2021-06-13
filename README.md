@@ -51,7 +51,7 @@ We are pushing 2 images as our application has 2 pipelines.
 
 Here is our architecture diagram. <br>
 
-<img src="/images/techflow.PNG">
+<img src="/image/techflow.PNG">
 
 ### Creating batch pipelines in Pachyderm
 A Pachyderm Pipeline can be defined in three steps:

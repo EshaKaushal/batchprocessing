@@ -208,6 +208,13 @@ NAME       VERSION    INPUT             CREATED          STATE / LAST JOB    DES
 getfiles   1          tick:@every 300s  10 minutes ago   running/running     A pipeline that gets a file out of GCS
 push-answers   1      getfiles:/pfs/in  5 minutes ago   running/running     A pipeline that pushes answers to the database
 ```
+
+```
+pachctl list file <repo>@<branch-or-commit>[:<path/in/pfs>] [flags]
+```
+
+<img src="/image/listfile.PNG">
+
 ```
 watch pachctl list job
 ```

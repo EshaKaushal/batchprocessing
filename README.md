@@ -27,6 +27,7 @@ We use pachyderm to create batch pipelines that regularly scan our cloud buckets
 
 * Pipelien 2 - Reads in the output repository of the first pipeline as its inputs and pushes each row of the processed data as records in our PostgreSQL database.
 
+<img src="/image/pachypipeline.PNG">
 
 2) **Docker Hub** - Docker Hub is a service provided by Docker for creating and sharing container images for the project. Docker images are pushed to Docker Hub through the ``` docker push``` command. A single Docker Hub repository can hold many Docker images.
 

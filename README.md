@@ -216,5 +216,6 @@ watch pachctl list job
 ```
 **system response**
 <img src="/image/joblist.PNG">
+```
 pachctl logs -j <job_id>
 ```

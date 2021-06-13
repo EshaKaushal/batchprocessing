@@ -187,11 +187,8 @@ pachctl create secret -f secret_db.json
     pachctl list repo
 ```
 **system response**
-```
-NAME     CREATED     SIZE (MASTER)
-pfs/in 6 hours ago 1000B
-pfs/out 6 hours ago 1000B
-```
+<img src="/image/listrepo.PNG">
+
 Refer to [this helpful tutorial](https://docs.pachyderm.com/latest/getting_started/beginner_tutorial/) to make your pipeline spec. <br>
 
 - 7. Create your pipeline 

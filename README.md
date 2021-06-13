@@ -70,6 +70,9 @@ We are pushing 2 images as our application has 2 pipelines.
 ```
 
 3) **Google Cloud Services** - We are extensively using google cloud services like - Clour Run, SQL server, Cloud Shell, Cloud storage bucket to ensure that our application and batch pipelines interact with each other.
+User can refer to these links to setuo and work on google storage -
+https://cloud.google.com/storage/docs/cloud-console#_creatingbuckets <br>
+https://googleapis.dev/python/storage/latest/index.html <br>
 
 
 ### Creating batch pipelines in Pachyderm
